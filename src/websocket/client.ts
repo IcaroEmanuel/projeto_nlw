@@ -13,7 +13,7 @@ io.on("connect", (socket) => {
     const { text, email } = params
 
     //Verifica se existe usuário através do email
-    const userExists = usersServices.findByEmail(email)
+    const userExists = await usersServices.findByEmail(email)
 
     //Se não existir ele será criado e o user_id vai receber o id do objeto user
     if (!userExists) {
