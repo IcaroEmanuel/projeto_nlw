@@ -1,0 +1,62 @@
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm";
+
+export class CreateConnections1619124282414 implements MigrationInterface {
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.createTable(
+            new Table({
+                name: "connections",
+                columns: [
+                    {
+                        name: "id",
+                        type: "uuid",
+                        isPrimary: true,
+                    },
+                    {
+                        name: "admin_id",
+                        type: "uuid",
+                        isNullable: true,
+                    },
+                    {
+                        name: "user_id",
+                        type: "uuid",
+                    },
+                    {
+                        name: "socket_id",
+                        type: "varchar",
+                    },
+                    {
+                        name: "created_at",
+                        type: "timestamp",
+                        default: "now()",
+                    },
+                    {
+                        name: "updated_at",
+                        type: "timesstamp",
+                        default: "now()",
+                    },
+
+                ]
+            })
+        )
+
+        //Dessa vez foi usado uma criação de foreign key fora do createtable, diferente do que foi feito na tabela messages
+        await queryRunner.createForeignKey(
+            "connections",
+            new TableForeignKey({
+                name: "FKConnectionUsers",
+                referencedTableName: "users",
+                referencedColumnNames: ["id"],
+                columnNames: ["user_id"],
+                onDelete: "SET NULL",
+                onUpdate: "SET NULL",
+            })
+        )
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.dropForeignKey("connections", "FKConnectionUsers")
+        await queryRunner.dropTable("connections")
+    }
+
+}
